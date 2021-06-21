@@ -10,7 +10,10 @@ Parameters:
     Description: Vpc Id
   PrivateSubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
-    Description: Subnet Ids
+    Description: Private Subnet Ids
+  PublicSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Public Subnet Ids
   LoadBalancerPort:
     Type: Number
     Description: LoadBalancer Port
@@ -131,31 +134,31 @@ Resources:
           FromPort: !Ref LoadBalancerPort
           ToPort: !Ref LoadBalancerPort
           CidrIp: 0.0.0.0/0
-#  LoadBalancer:
-#    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-#    Properties:
-#      Name: !Sub '${ApplicationName}-${Environment}-lb'
-#      Scheme: internet-facing
-#      SecurityGroups:
-#        - !Ref LoadBalancerSecurityGroup
-#      Type: application
-#      Subnets: !Ref PublicSubnetIds
-#  LoadBalancerListener:
-#    Type: AWS::ElasticLoadBalancingV2::Listener
-#    Properties:
-#      DefaultActions:
-#        - Type: "forward"
-#          ForwardConfig:
-#            TargetGroups:
-#              - TargetGroupArn: !Ref TargetGroup
-#                Weight: 1
-#      LoadBalancerArn: !Ref LoadBalancer
-#      Port: !Ref LoadBalancerPort
-#      Protocol: "HTTP"
-#  LoadBalancerDNSNameSsmParameter:
-#    Type: AWS::SSM::Parameter
-#    Properties:
-#      Name: !Sub '/${ApplicationName}/${Environment}/load-balancer/dns-name'
-#      Type: String
-#      Value: !GetAtt [ LoadBalancer, DNSName ]
-#      Description: Elasticache Port
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub '${ApplicationName}-${Environment}-lb'
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
+      Type: application
+      Subnets: !Ref PublicSubnetIds
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: "forward"
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref TargetGroup
+                Weight: 1
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: !Ref LoadBalancerPort
+      Protocol: "HTTP"
+  LoadBalancerDNSNameSsmParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/${ApplicationName}/${Environment}/load-balancer/dns-name'
+      Type: String
+      Value: !GetAtt [ LoadBalancer, DNSName ]
+      Description: Elasticache Port

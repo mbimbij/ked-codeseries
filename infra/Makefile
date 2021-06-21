@@ -6,7 +6,7 @@ endif
 
 all: s3-bucket ssh-key-pair
 	$(eval export BASE_AMI_ID = $(shell aws ssm get-parameters --names /aws/service/canonical/ubuntu/server/20.04/stable/current/amd64/hvm/ebs-gp2/ami-id --query 'Parameters[0].[Value]' --output text))
-	$(eval export USER_DATA_BASE_64 = $(shell base64 -w0 auto-scaling-group/user-data.sh))
+	$(eval export USER_DATA_BASE_64 = $(shell base64 -w0 ec2-deployment/user-data.sh))
 	aws cloudformation package --template-file master-stack.yml --output-template packaged-templates/master-stack.yml --s3-bucket $(S3_BUCKET_NAME)
 	envsubst < stack-parameters.json  > packaged-templates/stack-parameters.json
 	aws cloudformation deploy --stack-name $(APPLICATION_NAME) --template-file packaged-templates/master-stack.yml --parameter-overrides file://packaged-templates/stack-parameters.json --capabilities CAPABILITY_NAMED_IAM
