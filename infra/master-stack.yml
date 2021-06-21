@@ -33,12 +33,15 @@ Parameters:
   ApplicationPort:
     Type: Number
     Description: Subnet Name
-  ApplicationAmiId:
+  BaseAmiId:
     Type: AWS::EC2::Image::Id
     Description: Ami Id
   UserDataBase64:
     Type: String
     Description: User Data Base64
+  SshKeyName:
+    Type: String
+    Description: SSH Key Pair Name
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -61,6 +64,21 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}/StagingNetwork'
+  StagingBastionHost:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: 'bastion-host/bastion-host.yml'
+      Parameters:
+        VpcId: !GetAtt StagingNetwork.Outputs.VPC
+        SubnetId: !GetAtt StagingNetwork.Outputs.PublicSubnet1
+        Environment: 'staging'
+        AmiId:
+          Ref: BaseAmiId
+        SshKeyName:
+          Ref: SshKeyName
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}::BastionHost'
   StagingAutoScalingGroup:
     Type: "AWS::CloudFormation::Stack"
     Properties:
@@ -70,15 +88,18 @@ Resources:
           Ref: ApplicationName
         Environment: 'staging'
         VpcId: !GetAtt StagingNetwork.Outputs.VPC
+        SubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
         ApplicationPort:
           Ref: ApplicationPort
-        SubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
         AmiId:
-          Ref: ApplicationAmiId
+          Ref: BaseAmiId
         InstanceType:
           Ref: StagingApplicationInstanceType
         UserDataBase64:
           Ref: UserDataBase64
+        SshKeyName:
+          Ref: SshKeyName
+        BastionHostSecurityGroupId: !GetAtt StagingBastionHost.Outputs.SecurityGroupId
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::StagingAutoScalingGroup'

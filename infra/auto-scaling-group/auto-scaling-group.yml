@@ -23,12 +23,34 @@ Parameters:
   UserDataBase64:
     Type: String
     Description: User Data Base64
+  SshKeyName:
+    Default: ""
+    Type: String
+    Description: SSH Key Pair Name
+  BastionHostSecurityGroupId:
+    Default: ""
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Bastion Host Security Group
+Conditions:
+  BastionHostSshAccess:
+    Fn::Not:
+      - !Equals [ !Ref SshKeyName, "" ]
 Resources:
   Ec2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: ec2 security group
       VpcId: !Ref VpcId
+  Ec2SecurityGroupBastionHostIngress:
+    Condition: BastionHostSshAccess
+    Type: AWS::EC2::SecurityGroupIngress
+    DependsOn: Ec2SecurityGroup
+    Properties:
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      GroupId: !Ref Ec2SecurityGroup
+      SourceSecurityGroupId: !Ref BastionHostSecurityGroupId
   Ec2InstanceProfile:
     Type: "AWS::IAM::InstanceProfile"
     Properties:
@@ -75,6 +97,7 @@ Resources:
         SecurityGroupIds:
           - !Ref Ec2SecurityGroup
         UserData: !Ref UserDataBase64
+        KeyName: !If [BastionHostSshAccess, !Ref SshKeyName, !Ref AWS::NoValue]
       LaunchTemplateName: !Sub '${ApplicationName}-${Environment}-launch-template'
   AutoScalingGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
