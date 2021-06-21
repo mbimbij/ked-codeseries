@@ -3,7 +3,7 @@ os: linux
 files:
   - source: /deployment/application.service
     destination: /etc/systemd/system
-  - source: /target/application.jar
+  - source: /application.jar
     destination: /opt/application
 hooks:
   ApplicationStop:
