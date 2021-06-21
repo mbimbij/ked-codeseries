@@ -19,6 +19,6 @@ public class SpringBootApplicationRunner {
 
   @GetMapping("/")
   public String helloWorld(){
-    return "Hello World ! :: "+uuid;
+    return "Hello World 2 ! :: "+uuid;
   }
 }
