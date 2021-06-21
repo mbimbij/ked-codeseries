@@ -1,0 +1,308 @@
+Parameters:
+  ApplicationName:
+    Type: String
+    Description: Application Name
+  StagingVPCCIDR:
+    Type: String
+    Description: CIDR block used to create the VPC (e.g. 10.0.0.0/24)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.0/24)
+  StagingPublicSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ1 (e.g. 10.0.0.0/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.0/26)
+  StagingPublicSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ2 (e.g. 10.0.0.64/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.64/26)
+  StagingPrivateSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ1 (e.g.
+      10.0.0.128/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.128/26)
+  StagingPrivateSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ2 (e.g.
+      10.0.0.192/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.192/26)
+  StagingApplicationInstanceType:
+    Type: String
+    Description: Instance Type
+  StagingLoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
+  StagingHealthCheckIntervalSeconds:
+    Type: Number
+    Description: Staging Health Check Interval Seconds
+  StagingHealthyThresholdCount:
+    Type: Number
+    Description: Staging Healthy Threshold Count
+  StagingUnhealthyThresholdCount:
+    Type: Number
+    Description: Staging Unhealthy Threshold Count
+  ProductionVPCCIDR:
+    Type: String
+    Description: CIDR block used to create the VPC (e.g. 10.0.0.0/24)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.0/24)
+  ProductionPublicSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ1 (e.g. 10.0.0.0/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.0/26)
+  ProductionPublicSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ2 (e.g. 10.0.0.64/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.64/26)
+  ProductionPrivateSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ1 (e.g.
+      10.0.0.128/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.128/26)
+  ProductionPrivateSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ2 (e.g.
+      10.0.0.192/26)
+    AllowedPattern: (\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{2})
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g.
+      10.0.0.192/26)
+  ProductionApplicationInstanceType:
+    Type: String
+    Description: Instance Type
+  ProductionLoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
+  ProductionHealthCheckIntervalSeconds:
+    Type: Number
+    Description: Production Health Check Interval Seconds
+  ProductionHealthyThresholdCount:
+    Type: Number
+    Description: Production Healthy Threshold Count
+  ProductionUnhealthyThresholdCount:
+    Type: Number
+    Description: Production Unhealthy Threshold Count
+  ApplicationPort:
+    Type: Number
+    Description: Application Port
+  LoadBalancerPort:
+    Type: Number
+    Description: Load Balancer Port
+  BaseAmiId:
+    Type: AWS::EC2::Image::Id
+    Description: Ami Id
+  UserDataBase64:
+    Type: String
+    Description: User Data Base64
+  SshKeyName:
+    Type: String
+    Description: SSH Key Pair Name
+  S3Bucket:
+    Type: String
+    Description: S3 Bucket
+  GithubRepo:
+    Type: String
+    Description: Github source code repository
+  GithubRepoBranch:
+    Type: String
+    Description: Github source code branch
+Resources:
+  StagingNetwork:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.eu-west-3.amazonaws.com/ked-642009745804-eu-west-3-bucket/61aa022b03eb7f11099c05d3c0b914d8.template
+      Parameters:
+        VPCCIDR:
+          Ref: StagingVPCCIDR
+        PublicSubnet1CIDR:
+          Ref: StagingPublicSubnet1CIDR
+        PublicSubnet2CIDR:
+          Ref: StagingPublicSubnet2CIDR
+        PrivateSubnet1CIDR:
+          Ref: StagingPrivateSubnet1CIDR
+        PrivateSubnet2CIDR:
+          Ref: StagingPrivateSubnet2CIDR
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: staging
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}/StagingNetwork
+  StagingBastionHost:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.eu-west-3.amazonaws.com/ked-642009745804-eu-west-3-bucket/1d79f2d01f0bbec5baee97618b14bdd9.template
+      Parameters:
+        VpcId:
+          Fn::GetAtt:
+          - StagingNetwork
+          - Outputs.VPC
+        SubnetId:
+          Fn::GetAtt:
+          - StagingNetwork
+          - Outputs.PublicSubnet1
+        Environment: staging
+        AmiId:
+          Ref: BaseAmiId
+        SshKeyName:
+          Ref: SshKeyName
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}::StagingBastionHost
+  StagingEC2BasedInfra:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.eu-west-3.amazonaws.com/ked-642009745804-eu-west-3-bucket/c0f656eed0ef6a6399b6a810c49cc465.template
+      Parameters:
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: staging
+        VpcId:
+          Fn::GetAtt:
+          - StagingNetwork
+          - Outputs.VPC
+        PrivateSubnetIds:
+          Fn::GetAtt:
+          - StagingNetwork
+          - Outputs.PrivateSubnets
+        PublicSubnetIds:
+          Fn::GetAtt:
+          - StagingNetwork
+          - Outputs.PublicSubnets
+        ApplicationPort:
+          Ref: ApplicationPort
+        LoadBalancerPort:
+          Ref: LoadBalancerPort
+        AmiId:
+          Ref: BaseAmiId
+        InstanceType:
+          Ref: StagingApplicationInstanceType
+        UserDataBase64:
+          Ref: UserDataBase64
+        SshKeyName:
+          Ref: SshKeyName
+        BastionHostSecurityGroupId:
+          Fn::GetAtt:
+          - StagingBastionHost
+          - Outputs.SecurityGroupId
+        LoadBalancerDeregistrationDelay:
+          Ref: StagingLoadBalancerDeregistrationDelay
+        HealthCheckIntervalSeconds:
+          Ref: StagingHealthCheckIntervalSeconds
+        HealthyThresholdCount:
+          Ref: StagingHealthyThresholdCount
+        UnhealthyThresholdCount:
+          Ref: StagingUnhealthyThresholdCount
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}::StagingEC2BasedInfra
+  ProductionNetwork:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.eu-west-3.amazonaws.com/ked-642009745804-eu-west-3-bucket/61aa022b03eb7f11099c05d3c0b914d8.template
+      Parameters:
+        VPCCIDR:
+          Ref: ProductionVPCCIDR
+        PublicSubnet1CIDR:
+          Ref: ProductionPublicSubnet1CIDR
+        PublicSubnet2CIDR:
+          Ref: ProductionPublicSubnet2CIDR
+        PrivateSubnet1CIDR:
+          Ref: ProductionPrivateSubnet1CIDR
+        PrivateSubnet2CIDR:
+          Ref: ProductionPrivateSubnet2CIDR
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: production
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}/ProductionNetwork
+  ProductionEC2BasedInfra:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.eu-west-3.amazonaws.com/ked-642009745804-eu-west-3-bucket/c0f656eed0ef6a6399b6a810c49cc465.template
+      Parameters:
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: production
+        VpcId:
+          Fn::GetAtt:
+          - ProductionNetwork
+          - Outputs.VPC
+        PrivateSubnetIds:
+          Fn::GetAtt:
+          - ProductionNetwork
+          - Outputs.PrivateSubnets
+        PublicSubnetIds:
+          Fn::GetAtt:
+          - ProductionNetwork
+          - Outputs.PublicSubnets
+        ApplicationPort:
+          Ref: ApplicationPort
+        LoadBalancerPort:
+          Ref: LoadBalancerPort
+        AmiId:
+          Ref: BaseAmiId
+        InstanceType:
+          Ref: ProductionApplicationInstanceType
+        UserDataBase64:
+          Ref: UserDataBase64
+        LoadBalancerDeregistrationDelay:
+          Ref: ProductionLoadBalancerDeregistrationDelay
+        HealthCheckIntervalSeconds:
+          Ref: ProductionHealthCheckIntervalSeconds
+        HealthyThresholdCount:
+          Ref: ProductionHealthyThresholdCount
+        UnhealthyThresholdCount:
+          Ref: ProductionUnhealthyThresholdCount
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}::ProductionEC2BasedInfra
+  Pipeline:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.eu-west-3.amazonaws.com/ked-642009745804-eu-west-3-bucket/7f1e4e09e34911ccb065d2ff8767df71.template
+      Parameters:
+        ApplicationName:
+          Ref: ApplicationName
+        S3Bucket:
+          Ref: S3Bucket
+        GithubRepo:
+          Ref: GithubRepo
+        GithubRepoBranch:
+          Ref: GithubRepoBranch
+        StagingAutoScalingGroupName:
+          Fn::GetAtt:
+          - StagingEC2BasedInfra
+          - Outputs.AutoScalingGroupName
+        ProductionAutoScalingGroupName:
+          Fn::GetAtt:
+          - ProductionEC2BasedInfra
+          - Outputs.AutoScalingGroupName
+        ProductionTargetGroupName:
+          Fn::GetAtt:
+          - ProductionEC2BasedInfra
+          - Outputs.TargetGroupName
+      Tags:
+      - Key: Name
+        Value:
+          Fn::Sub: ${AWS::StackName}::Pipeline

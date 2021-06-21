@@ -1,0 +1,126 @@
+[
+  {
+    "ParameterKey": "ApplicationName",
+    "ParameterValue": "ked"
+  },
+  {
+    "ParameterKey": "StagingVPCCIDR",
+    "ParameterValue": "10.1.0.0/16"
+  },
+  {
+    "ParameterKey": "StagingPublicSubnet1CIDR",
+    "ParameterValue": "10.1.0.0/24"
+  },
+  {
+    "ParameterKey": "StagingPublicSubnet2CIDR",
+    "ParameterValue": "10.1.1.0/24"
+  },
+  {
+    "ParameterKey": "StagingPrivateSubnet1CIDR",
+    "ParameterValue": "10.1.10.0/24"
+  },
+  {
+    "ParameterKey": "StagingPrivateSubnet2CIDR",
+    "ParameterValue": "10.1.11.0/24"
+  },
+  {
+    "ParameterKey": "StagingPrivateSubnet2CIDR",
+    "ParameterValue": "10.1.11.0/24"
+  },
+  {
+    "ParameterKey": "StagingApplicationInstanceType",
+    "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "StagingLoadBalancerDeregistrationDelay",
+    "ParameterValue": "20"
+  },
+  {
+    "ParameterKey": "StagingHealthCheckIntervalSeconds",
+    "ParameterValue": "10"
+  },
+  {
+    "ParameterKey": "StagingHealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "StagingUnhealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "ProductionVPCCIDR",
+    "ParameterValue": "10.0.0.0/16"
+  },
+  {
+    "ParameterKey": "ProductionPublicSubnet1CIDR",
+    "ParameterValue": "10.0.0.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPublicSubnet2CIDR",
+    "ParameterValue": "10.0.1.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPrivateSubnet1CIDR",
+    "ParameterValue": "10.0.10.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPrivateSubnet2CIDR",
+    "ParameterValue": "10.0.11.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPrivateSubnet2CIDR",
+    "ParameterValue": "10.0.11.0/24"
+  },
+  {
+    "ParameterKey": "ProductionApplicationInstanceType",
+    "ParameterValue": "t2.medium"
+  },
+  {
+    "ParameterKey": "ProductionLoadBalancerDeregistrationDelay",
+    "ParameterValue": "20"
+  },
+  {
+    "ParameterKey": "ProductionHealthCheckIntervalSeconds",
+    "ParameterValue": "15"
+  },
+  {
+    "ParameterKey": "ProductionHealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "ProductionUnhealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "BaseAmiId",
+    "ParameterValue": "ami-03569f6d482517724"
+  },
+  {
+    "ParameterKey": "ApplicationPort",
+    "ParameterValue": "8080"
+  },
+  {
+    "ParameterKey": "LoadBalancerPort",
+    "ParameterValue": "80"
+  },
+  {
+    "ParameterKey": "UserDataBase64",
+    "ParameterValue": "IyEgL2Jpbi9iYXNoCgojIGluc3RhbGxpbmcgc29tZSB1dGlsaXRpZXMKc3VkbyBhcHQgdXBkYXRlCnN1ZG8gYXB0IGluc3RhbGwgLXkgdHJlZSBuY2R1IG1sb2NhdGUgdG11eCBqcSBhd3NjbGkKCiMgaW5zdGFsbGluZyBqYXZhCnN1ZG8gYXB0IGluc3RhbGwgb3Blbmpkay0xNi1qZGsgLXkKCkFXU19SRUdJT049JChjdXJsIC1zIGh0dHA6Ly8xNjkuMjU0LjE2OS4yNTQvbGF0ZXN0L2R5bmFtaWMvaW5zdGFuY2UtaWRlbnRpdHkvZG9jdW1lbnQgfCBqcSAucmVnaW9uIC1yKQppZiBbWyAteiAkQVdTX1JFR0lPTiBdXTsgdGhlbgogIGVjaG8gIkFXU19SRUdJT04gaXMgZW1wdHksIGRlZmF1bHRpbmcgdG8gJ3VzLWVhc3QtMSciCiAgQVdTX1JFR0lPTj0idXMtZWFzdC0xIgpmaQplY2hvICJyZWdpb24gaXM6ICRBV1NfUkVHSU9OIgpleHBvcnQgQVdTX1JFR0lPTgoKIyBpbnN0YWxsaW5nIGNvZGVkZXBsb3kgYWdlbnQKc3VkbyBhcHQtZ2V0IGluc3RhbGwgcnVieSB3Z2V0IC15CndnZXQgaHR0cHM6Ly9hd3MtY29kZWRlcGxveS0kQVdTX1JFR0lPTi5zMy4kQVdTX1JFR0lPTi5hbWF6b25hd3MuY29tL2xhdGVzdC9pbnN0YWxsCmNobW9kICt4IC4vaW5zdGFsbApzdWRvIC4vaW5zdGFsbCBhdXRvIHwgdGVlIC90bXAvbG9nZmlsZQpzdWRvIHN5c3RlbWN0bCBzdGFydCBjb2RlZGVwbG95LWFnZW50CnN1ZG8gc3lzdGVtY3RsIGVuYWJsZSBjb2RlZGVwbG95LWFnZW50CgojIHNldHRpbmcgYXdzIGNsaSByZWdpb24KYXdzIGNvbmZpZ3VyZSBzZXQgcmVnaW9uICRBV1NfUkVHSU9O"
+  },
+  {
+    "ParameterKey": "SshKeyName",
+    "ParameterValue": "local"
+  },
+  {
+    "ParameterKey": "S3Bucket",
+    "ParameterValue": "ked-642009745804-eu-west-3-bucket"
+  },
+  {
+    "ParameterKey": "GithubRepo",
+    "ParameterValue": "mbimbij/ked-codeseries"
+  },
+  {
+    "ParameterKey": "GithubRepoBranch",
+    "ParameterValue": "pipeline-cfn"
+  }
+]
