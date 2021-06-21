@@ -1,0 +1,26 @@
+[
+  {
+    "ParameterKey": "StagingVPCCIDR",
+    "ParameterValue": "10.1.0.0/16"
+  },
+  {
+    "ParameterKey": "StagingPublicSubnet1CIDR",
+    "ParameterValue": "10.1.0.0/24"
+  },
+  {
+    "ParameterKey": "StagingPublicSubnet2CIDR",
+    "ParameterValue": "10.1.1.0/24"
+  },
+  {
+    "ParameterKey": "StagingPrivateSubnet1CIDR",
+    "ParameterValue": "10.1.10.0/24"
+  },
+  {
+    "ParameterKey": "StagingPrivateSubnet2CIDR",
+    "ParameterValue": "10.1.11.0/24"
+  },
+  {
+    "ParameterKey": "ApplicationName",
+    "ParameterValue": "${APPLICATION_NAME}"
+  }
+]
