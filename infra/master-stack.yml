@@ -32,7 +32,10 @@ Parameters:
     Description: Instance Type
   ApplicationPort:
     Type: Number
-    Description: Subnet Name
+    Description: Application Port
+  LoadBalancerPort:
+    Type: Number
+    Description: Load Balancer Port
   BaseAmiId:
     Type: AWS::EC2::Image::Id
     Description: Ami Id
@@ -91,6 +94,8 @@ Resources:
         SubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
         ApplicationPort:
           Ref: ApplicationPort
+        LoadBalancerPort:
+          Ref: LoadBalancerPort
         AmiId:
           Ref: BaseAmiId
         InstanceType:

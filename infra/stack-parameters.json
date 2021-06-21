@@ -40,6 +40,10 @@
     "ParameterValue": "8080"
   },
   {
+    "ParameterKey": "LoadBalancerPort",
+    "ParameterValue": "80"
+  },
+  {
     "ParameterKey": "UserDataBase64",
     "ParameterValue": "${USER_DATA_BASE_64}"
   },

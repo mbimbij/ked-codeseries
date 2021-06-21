@@ -11,9 +11,12 @@ Parameters:
   SubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
     Description: Subnet Ids
+  LoadBalancerPort:
+    Type: Number
+    Description: LoadBalancer Port
   ApplicationPort:
     Type: Number
-    Description: Subnet Name
+    Description: Application Port
   AmiId:
     Type: AWS::EC2::Image::Id
     Description: Ami Id
@@ -41,6 +44,11 @@ Resources:
     Properties:
       GroupDescription: ec2 security group
       VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
   Ec2SecurityGroupBastionHostIngress:
     Condition: BastionHostSshAccess
     Type: AWS::EC2::SecurityGroupIngress
@@ -112,3 +120,42 @@ Resources:
       TargetGroupARNs:
         - !Ref TargetGroup
       VPCZoneIdentifier: !Ref SubnetIds
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub '${ApplicationName}::${Environment}::LB-SG'
+      GroupDescription: Alb security group
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref LoadBalancerPort
+          ToPort: !Ref LoadBalancerPort
+          CidrIp: 0.0.0.0/0
+#  LoadBalancer:
+#    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+#    Properties:
+#      Name: !Sub '${ApplicationName}-${Environment}-lb'
+#      Scheme: internet-facing
+#      SecurityGroups:
+#        - !Ref LoadBalancerSecurityGroupId
+#      Type: application
+#      Subnets: !Ref PublicSubnetIds
+#  LoadBalancerListener:
+#    Type: AWS::ElasticLoadBalancingV2::Listener
+#    Properties:
+#      DefaultActions:
+#        - Type: "forward"
+#          ForwardConfig:
+#            TargetGroups:
+#              - TargetGroupArn: !Ref TargetGroup
+#                Weight: 1
+#      LoadBalancerArn: !Ref LoadBalancer
+#      Port: !Ref LoadBalancerPort
+#      Protocol: "HTTP"
+#  LoadBalancerDNSNameSsmParameter:
+#    Type: AWS::SSM::Parameter
+#    Properties:
+#      Name: !Sub '/${ApplicationName}/${Environment}/load-balancer/dns-name'
+#      Type: String
+#      Value: !GetAtt [ LoadBalancer, DNSName ]
+#      Description: Elasticache Port
