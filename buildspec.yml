@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  build:
+    commands:
+      - mvn clean package
+  post_build:
+    commands:
+      # move the jar (by wildcard, agnostic to its name) to top level application.jar
+      - mv target/*.jar application.jar
+cache:
+  paths:
+    - '/root/.m2/**/*'
+artifacts:
+  files:
+    - '**/*'

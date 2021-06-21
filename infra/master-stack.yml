@@ -92,6 +92,7 @@ Resources:
         Environment: 'staging'
         VpcId: !GetAtt StagingNetwork.Outputs.VPC
         PrivateSubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
+        PublicSubnetIds: !GetAtt StagingNetwork.Outputs.PublicSubnets
         ApplicationPort:
           Ref: ApplicationPort
         LoadBalancerPort:
