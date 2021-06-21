@@ -20,7 +20,23 @@
     "ParameterValue": "10.1.11.0/24"
   },
   {
-    "ParameterKey": "ApplicationName",
-    "ParameterValue": "${APPLICATION_NAME}"
+    "ParameterKey": "StagingPrivateSubnet2CIDR",
+    "ParameterValue": "10.1.11.0/24"
+  },
+  {
+    "ParameterKey": "StagingApplicationInstanceType",
+    "ParameterValue": "t2.micro"
+  },
+  {
+    "ParameterKey": "ApplicationAmiId",
+    "ParameterValue": "${APPLICATION_AMI_ID}"
+  },
+  {
+    "ParameterKey": "ApplicationPort",
+    "ParameterValue": "8080"
+  },
+  {
+    "ParameterKey": "UserDataBase64",
+    "ParameterValue": "${USER_DATA_BASE_64}"
   }
 ]

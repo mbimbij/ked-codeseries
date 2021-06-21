@@ -1,0 +1,91 @@
+Parameters:
+  ApplicationName:
+    Type: String
+    Description: Application Name
+  Environment:
+    Type: String
+    Description: "Environment: staging, production, etc."
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Vpc Id
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Subnet Ids
+  ApplicationPort:
+    Type: Number
+    Description: Subnet Name
+  AmiId:
+    Type: AWS::EC2::Image::Id
+    Description: Ami Id
+  InstanceType:
+    Type: String
+    Description: Instance Type
+  UserDataBase64:
+    Type: String
+    Description: User Data Base64
+Resources:
+  Ec2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ec2 security group
+      VpcId: !Ref VpcId
+  Ec2InstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Roles:
+        - Ref: Ec2InstanceRole
+  Ec2InstanceRole:
+    Type: 'AWS::IAM::Role'
+    Description: IAM role for !Ref ApplicationName EC2 instance profile
+    Properties:
+      RoleName: !Sub '${ApplicationName}-${Environment}-ec2-instance-role'
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub '${ApplicationName}-${Environment}-tg'
+      HealthCheckEnabled: true
+      HealthCheckPort: !Ref ApplicationPort
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 5
+      UnhealthyThresholdCount: 2
+      HealthCheckPath: "/actuator/health"
+      TargetType: instance
+      Protocol: HTTP
+      Port: !Ref ApplicationPort
+      VpcId: !Ref VpcId
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile:
+          Arn: !GetAtt [ Ec2InstanceProfile, Arn ]
+        SecurityGroupIds:
+          - !Ref Ec2SecurityGroup
+        UserData: !Ref UserDataBase64
+      LaunchTemplateName: !Sub '${ApplicationName}-${Environment}-launch-template'
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      HealthCheckGracePeriod: 60
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: '1'
+      DesiredCapacity: '2'
+      MaxSize: '3'
+      TargetGroupARNs:
+        - !Ref TargetGroup
+      VPCZoneIdentifier: !Ref SubnetIds
