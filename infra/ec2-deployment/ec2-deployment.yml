@@ -37,6 +37,9 @@ Parameters:
     Default: ""
     Type: AWS::EC2::SecurityGroup::Id
     Description: Bastion Host Security Group
+  LoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
 Conditions:
   BastionHostSshAccess:
     Fn::Not:
@@ -97,6 +100,9 @@ Resources:
       Protocol: HTTP
       Port: !Ref ApplicationPort
       VpcId: !Ref VpcId
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: !Ref LoadBalancerDeregistrationDelay
   LaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
     Properties:
