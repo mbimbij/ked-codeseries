@@ -1,0 +1,57 @@
+Parameters:
+  ApplicationName:
+    Type: String
+    Description: Application Name
+  StagingVPCCIDR:
+    Type: String
+    Description: CIDR block used to create the VPC (e.g. 10.0.0.0/24)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.0/24)
+  StagingPublicSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ1 (e.g. 10.0.0.0/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.0/26)
+  StagingPublicSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ2 (e.g. 10.0.0.64/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.64/26)
+  StagingPrivateSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ1 (e.g. 10.0.0.128/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.128/26)
+  StagingPrivateSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ2 (e.g. 10.0.0.192/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.192/26)
+#  ApplicationAmiId:
+#    Type: AWS::EC2::Image::Id
+#    Description: Ami Id
+#  ApplicationInstanceType:
+#    Type: String
+#    Description: Instance Type
+Resources:
+  StagingNetwork:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: 'network/network.yml'
+      Parameters:
+        VPCCIDR:
+          Ref: StagingVPCCIDR
+        PublicSubnet1CIDR:
+          Ref: StagingPublicSubnet1CIDR
+        PublicSubnet2CIDR:
+          Ref: StagingPublicSubnet2CIDR
+        PrivateSubnet1CIDR:
+          Ref: StagingPrivateSubnet1CIDR
+        PrivateSubnet2CIDR:
+          Ref: StagingPrivateSubnet2CIDR
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: 'staging'
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}/StagingNetwork'
