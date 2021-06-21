@@ -52,7 +52,19 @@
     "ParameterValue": "${SSH_KEY_NAME}"
   },
   {
-    "ParameterKey": "LoadBalancerDeregistrationDelay",
+    "ParameterKey": "StagingLoadBalancerDeregistrationDelay",
     "ParameterValue": "20"
+  },
+  {
+    "ParameterKey": "StagingHealthCheckIntervalSeconds",
+    "ParameterValue": "10"
+  },
+  {
+    "ParameterKey": "StagingHealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "StagingUnhealthyThresholdCount",
+    "ParameterValue": "2"
   }
 ]

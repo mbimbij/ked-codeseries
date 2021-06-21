@@ -40,6 +40,15 @@ Parameters:
   LoadBalancerDeregistrationDelay:
     Type: Number
     Description: Load Balancer Deregistration Delay
+  HealthCheckIntervalSeconds:
+    Type: Number
+    Description: Health Check Interval Seconds
+  HealthyThresholdCount:
+    Type: Number
+    Description: Healthy Threshold Count
+  UnhealthyThresholdCount:
+    Type: Number
+    Description: Unhealthy Threshold Count
 Conditions:
   BastionHostSshAccess:
     Fn::Not:
@@ -91,10 +100,10 @@ Resources:
       Name: !Sub '${ApplicationName}-${Environment}-tg'
       HealthCheckEnabled: true
       HealthCheckPort: !Ref ApplicationPort
-      HealthCheckIntervalSeconds: 30
+      HealthCheckIntervalSeconds: !Ref HealthCheckIntervalSeconds
       HealthCheckTimeoutSeconds: 5
-      HealthyThresholdCount: 5
-      UnhealthyThresholdCount: 2
+      HealthyThresholdCount: !Ref HealthyThresholdCount
+      UnhealthyThresholdCount: !Ref UnhealthyThresholdCount
       HealthCheckPath: "/actuator/health"
       TargetType: instance
       Protocol: HTTP

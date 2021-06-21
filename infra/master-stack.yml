@@ -45,9 +45,18 @@ Parameters:
   SshKeyName:
     Type: String
     Description: SSH Key Pair Name
-  LoadBalancerDeregistrationDelay:
+  StagingLoadBalancerDeregistrationDelay:
     Type: Number
     Description: Load Balancer Deregistration Delay
+  StagingHealthCheckIntervalSeconds:
+    Type: Number
+    Description: Staging Health Check Interval Seconds
+  StagingHealthyThresholdCount:
+    Type: Number
+    Description: Staging Healthy Threshold Count
+  StagingUnhealthyThresholdCount:
+    Type: Number
+    Description: Staging Unhealthy Threshold Count
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -110,7 +119,13 @@ Resources:
           Ref: SshKeyName
         BastionHostSecurityGroupId: !GetAtt StagingBastionHost.Outputs.SecurityGroupId
         LoadBalancerDeregistrationDelay:
-          Ref: LoadBalancerDeregistrationDelay
+          Ref: StagingLoadBalancerDeregistrationDelay
+        HealthCheckIntervalSeconds:
+          Ref: StagingHealthCheckIntervalSeconds
+        HealthyThresholdCount:
+          Ref: StagingHealthyThresholdCount
+        UnhealthyThresholdCount:
+          Ref: StagingUnhealthyThresholdCount
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::EC2BasedInfra'
