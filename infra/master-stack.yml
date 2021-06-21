@@ -27,12 +27,18 @@ Parameters:
     Description: CIDR block should used to create the private subnet in AZ2 (e.g. 10.0.0.192/26)
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
     ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.192/26)
-#  ApplicationAmiId:
-#    Type: AWS::EC2::Image::Id
-#    Description: Ami Id
-#  ApplicationInstanceType:
-#    Type: String
-#    Description: Instance Type
+  StagingApplicationInstanceType:
+    Type: String
+    Description: Instance Type
+  ApplicationPort:
+    Type: Number
+    Description: Subnet Name
+  ApplicationAmiId:
+    Type: AWS::EC2::Image::Id
+    Description: Ami Id
+  UserDataBase64:
+    Type: String
+    Description: User Data Base64
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -55,3 +61,24 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}/StagingNetwork'
+  StagingAutoScalingGroup:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: 'auto-scaling-group/auto-scaling-group.yml'
+      Parameters:
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: 'staging'
+        VpcId: !GetAtt StagingNetwork.Outputs.VPC
+        ApplicationPort:
+          Ref: ApplicationPort
+        SubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
+        AmiId:
+          Ref: ApplicationAmiId
+        InstanceType:
+          Ref: StagingApplicationInstanceType
+        UserDataBase64:
+          Ref: UserDataBase64
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}::StagingAutoScalingGroup'
