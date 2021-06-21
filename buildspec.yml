@@ -5,7 +5,7 @@ phases:
       java: corretto11
   build:
     commands:
-      - mvn clean package
+      - mvn clean verify
   post_build:
     commands:
       # move the jar (by wildcard, agnostic to its name) to top level application.jar
