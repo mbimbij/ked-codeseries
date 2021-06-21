@@ -82,16 +82,16 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::BastionHost'
-  StagingAutoScalingGroup:
+  EC2BasedInfra:
     Type: "AWS::CloudFormation::Stack"
     Properties:
-      TemplateURL: 'auto-scaling-group/auto-scaling-group.yml'
+      TemplateURL: 'ec2-deployment/ec2-deployment.yml'
       Parameters:
         ApplicationName:
           Ref: ApplicationName
         Environment: 'staging'
         VpcId: !GetAtt StagingNetwork.Outputs.VPC
-        SubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
+        PrivateSubnetIds: !GetAtt StagingNetwork.Outputs.PrivateSubnets
         ApplicationPort:
           Ref: ApplicationPort
         LoadBalancerPort:
@@ -107,4 +107,4 @@ Resources:
         BastionHostSecurityGroupId: !GetAtt StagingBastionHost.Outputs.SecurityGroupId
       Tags:
         - Key: Name
-          Value: !Sub '${AWS::StackName}::StagingAutoScalingGroup'
+          Value: !Sub '${AWS::StackName}::EC2BasedInfra'
