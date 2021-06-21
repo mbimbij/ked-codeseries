@@ -45,6 +45,9 @@ Parameters:
   SshKeyName:
     Type: String
     Description: SSH Key Pair Name
+  LoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -106,6 +109,8 @@ Resources:
         SshKeyName:
           Ref: SshKeyName
         BastionHostSecurityGroupId: !GetAtt StagingBastionHost.Outputs.SecurityGroupId
+        LoadBalancerDeregistrationDelay:
+          Ref: LoadBalancerDeregistrationDelay
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::EC2BasedInfra'

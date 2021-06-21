@@ -50,5 +50,9 @@
   {
     "ParameterKey": "SshKeyName",
     "ParameterValue": "${SSH_KEY_NAME}"
+  },
+  {
+    "ParameterKey": "LoadBalancerDeregistrationDelay",
+    "ParameterValue": "20"
   }
 ]
