@@ -8,7 +8,7 @@ Parameters:
   VpcId:
     Type: AWS::EC2::VPC::Id
     Description: Vpc Id
-  SubnetIds:
+  PrivateSubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
     Description: Subnet Ids
   LoadBalancerPort:
@@ -119,7 +119,7 @@ Resources:
       MaxSize: '3'
       TargetGroupARNs:
         - !Ref TargetGroup
-      VPCZoneIdentifier: !Ref SubnetIds
+      VPCZoneIdentifier: !Ref PrivateSubnetIds
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -137,7 +137,7 @@ Resources:
 #      Name: !Sub '${ApplicationName}-${Environment}-lb'
 #      Scheme: internet-facing
 #      SecurityGroups:
-#        - !Ref LoadBalancerSecurityGroupId
+#        - !Ref LoadBalancerSecurityGroup
 #      Type: application
 #      Subnets: !Ref PublicSubnetIds
 #  LoadBalancerListener:
