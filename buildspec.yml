@@ -10,6 +10,9 @@ phases:
     commands:
       # move the jar (by wildcard, agnostic to its name) to top level application.jar
       - mv target/*.jar application.jar
+cache:
+  paths:
+    - '/root/.m2/**/*'
 artifacts:
   files:
     - '**/*'
