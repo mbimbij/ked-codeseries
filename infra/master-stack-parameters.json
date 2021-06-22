@@ -32,6 +32,66 @@
     "ParameterValue": "t2.micro"
   },
   {
+    "ParameterKey": "StagingLoadBalancerDeregistrationDelay",
+    "ParameterValue": "20"
+  },
+  {
+    "ParameterKey": "StagingHealthCheckIntervalSeconds",
+    "ParameterValue": "10"
+  },
+  {
+    "ParameterKey": "StagingHealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "StagingUnhealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
+    "ParameterKey": "ProductionVPCCIDR",
+    "ParameterValue": "10.0.0.0/16"
+  },
+  {
+    "ParameterKey": "ProductionPublicSubnet1CIDR",
+    "ParameterValue": "10.0.0.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPublicSubnet2CIDR",
+    "ParameterValue": "10.0.1.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPrivateSubnet1CIDR",
+    "ParameterValue": "10.0.10.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPrivateSubnet2CIDR",
+    "ParameterValue": "10.0.11.0/24"
+  },
+  {
+    "ParameterKey": "ProductionPrivateSubnet2CIDR",
+    "ParameterValue": "10.0.11.0/24"
+  },
+  {
+    "ParameterKey": "ProductionApplicationInstanceType",
+    "ParameterValue": "t2.medium"
+  },
+  {
+    "ParameterKey": "ProductionLoadBalancerDeregistrationDelay",
+    "ParameterValue": "180"
+  },
+  {
+    "ParameterKey": "ProductionHealthCheckIntervalSeconds",
+    "ParameterValue": "15"
+  },
+  {
+    "ParameterKey": "ProductionHealthyThresholdCount",
+    "ParameterValue": "3"
+  },
+  {
+    "ParameterKey": "ProductionUnhealthyThresholdCount",
+    "ParameterValue": "2"
+  },
+  {
     "ParameterKey": "BaseAmiId",
     "ParameterValue": "${BASE_AMI_ID}"
   },
@@ -50,21 +110,5 @@
   {
     "ParameterKey": "SshKeyName",
     "ParameterValue": "${SSH_KEY_NAME}"
-  },
-  {
-    "ParameterKey": "StagingLoadBalancerDeregistrationDelay",
-    "ParameterValue": "20"
-  },
-  {
-    "ParameterKey": "StagingHealthCheckIntervalSeconds",
-    "ParameterValue": "10"
-  },
-  {
-    "ParameterKey": "StagingHealthyThresholdCount",
-    "ParameterValue": "2"
-  },
-  {
-    "ParameterKey": "StagingUnhealthyThresholdCount",
-    "ParameterValue": "2"
   }
 ]

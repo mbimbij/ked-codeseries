@@ -30,6 +30,58 @@ Parameters:
   StagingApplicationInstanceType:
     Type: String
     Description: Instance Type
+  StagingLoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
+  StagingHealthCheckIntervalSeconds:
+    Type: Number
+    Description: Staging Health Check Interval Seconds
+  StagingHealthyThresholdCount:
+    Type: Number
+    Description: Staging Healthy Threshold Count
+  StagingUnhealthyThresholdCount:
+    Type: Number
+    Description: Staging Unhealthy Threshold Count
+  ProductionVPCCIDR:
+    Type: String
+    Description: CIDR block used to create the VPC (e.g. 10.0.0.0/24)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.0/24)
+  ProductionPublicSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ1 (e.g. 10.0.0.0/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.0/26)
+  ProductionPublicSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the public subnet in AZ2 (e.g. 10.0.0.64/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.64/26)
+  ProductionPrivateSubnet1CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ1 (e.g. 10.0.0.128/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.128/26)
+  ProductionPrivateSubnet2CIDR:
+    Type: String
+    Description: CIDR block should used to create the private subnet in AZ2 (e.g. 10.0.0.192/26)
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{2})"
+    ConstraintDescription: Must be a valid IP CIDR range of the form x.x.x.x/x. (e.g. 10.0.0.192/26)
+  ProductionApplicationInstanceType:
+    Type: String
+    Description: Instance Type
+  ProductionLoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
+  ProductionHealthCheckIntervalSeconds:
+    Type: Number
+    Description: Production Health Check Interval Seconds
+  ProductionHealthyThresholdCount:
+    Type: Number
+    Description: Production Healthy Threshold Count
+  ProductionUnhealthyThresholdCount:
+    Type: Number
+    Description: Production Unhealthy Threshold Count
   ApplicationPort:
     Type: Number
     Description: Application Port
@@ -45,18 +97,6 @@ Parameters:
   SshKeyName:
     Type: String
     Description: SSH Key Pair Name
-  StagingLoadBalancerDeregistrationDelay:
-    Type: Number
-    Description: Load Balancer Deregistration Delay
-  StagingHealthCheckIntervalSeconds:
-    Type: Number
-    Description: Staging Health Check Interval Seconds
-  StagingHealthyThresholdCount:
-    Type: Number
-    Description: Staging Healthy Threshold Count
-  StagingUnhealthyThresholdCount:
-    Type: Number
-    Description: Staging Unhealthy Threshold Count
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -93,8 +133,8 @@ Resources:
           Ref: SshKeyName
       Tags:
         - Key: Name
-          Value: !Sub '${AWS::StackName}::BastionHost'
-  EC2BasedInfra:
+          Value: !Sub '${AWS::StackName}::StagingBastionHost'
+  StagingEC2BasedInfra:
     Type: "AWS::CloudFormation::Stack"
     Properties:
       TemplateURL: 'ec2-deployment/ec2-deployment.yml'
@@ -128,4 +168,25 @@ Resources:
           Ref: StagingUnhealthyThresholdCount
       Tags:
         - Key: Name
-          Value: !Sub '${AWS::StackName}::EC2BasedInfra'
+          Value: !Sub '${AWS::StackName}::StagingEC2BasedInfra'
+  ProductionNetwork:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: 'network/network.yml'
+      Parameters:
+        VPCCIDR:
+          Ref: ProductionVPCCIDR
+        PublicSubnet1CIDR:
+          Ref: ProductionPublicSubnet1CIDR
+        PublicSubnet2CIDR:
+          Ref: ProductionPublicSubnet2CIDR
+        PrivateSubnet1CIDR:
+          Ref: ProductionPrivateSubnet1CIDR
+        PrivateSubnet2CIDR:
+          Ref: ProductionPrivateSubnet2CIDR
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: 'production'
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}/ProductionNetwork'
