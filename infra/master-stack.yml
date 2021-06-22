@@ -190,3 +190,35 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}/ProductionNetwork'
+  ProductionEC2BasedInfra:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: 'ec2-deployment/ec2-deployment.yml'
+      Parameters:
+        ApplicationName:
+          Ref: ApplicationName
+        Environment: 'production'
+        VpcId: !GetAtt ProductionNetwork.Outputs.VPC
+        PrivateSubnetIds: !GetAtt ProductionNetwork.Outputs.PrivateSubnets
+        PublicSubnetIds: !GetAtt ProductionNetwork.Outputs.PublicSubnets
+        ApplicationPort:
+          Ref: ApplicationPort
+        LoadBalancerPort:
+          Ref: LoadBalancerPort
+        AmiId:
+          Ref: BaseAmiId
+        InstanceType:
+          Ref: ProductionApplicationInstanceType
+        UserDataBase64:
+          Ref: UserDataBase64
+        LoadBalancerDeregistrationDelay:
+          Ref: ProductionLoadBalancerDeregistrationDelay
+        HealthCheckIntervalSeconds:
+          Ref: ProductionHealthCheckIntervalSeconds
+        HealthyThresholdCount:
+          Ref: ProductionHealthyThresholdCount
+        UnhealthyThresholdCount:
+          Ref: ProductionUnhealthyThresholdCount
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}::ProductionEC2BasedInfra'
