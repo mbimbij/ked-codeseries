@@ -7,6 +7,9 @@ ifndef AWS_REGION
 AWS_REGION := $(shell aws configure get region)
 endif
 
+GITHUB_REPO_BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
+export GITHUB_REPO_BRANCH
+MASTER_STACK_NAME=$(APPLICATION_NAME)-master-stack
 
 all: s3-bucket ssh-key-pair
 	$(eval export BASE_AMI_ID = $(shell aws ssm get-parameters --names /aws/service/canonical/ubuntu/server/20.04/stable/current/amd64/hvm/ebs-gp2/ami-id --query 'Parameters[0].[Value]' --output text))
@@ -14,14 +17,15 @@ all: s3-bucket ssh-key-pair
 	aws cloudformation package --template-file master-stack.yml --output-template packaged-templates/master-stack.yml --s3-bucket $(S3_BUCKET_NAME)
 	echo "AWS_REGION $(AWS_REGION)"
 	envsubst < master-stack-parameters.json  > packaged-templates/master-stack-parameters.json
-	aws cloudformation deploy --stack-name $(APPLICATION_NAME) --template-file packaged-templates/master-stack.yml --parameter-overrides file://packaged-templates/master-stack-parameters.json --capabilities CAPABILITY_NAMED_IAM
+	aws cloudformation deploy --stack-name $(MASTER_STACK_NAME) --template-file packaged-templates/master-stack.yml --parameter-overrides file://packaged-templates/master-stack-parameters.json --capabilities CAPABILITY_NAMED_IAM
 delete-all:
 	$(MAKE) -j2 delete-s3-bucket delete-ssh-key-pair
-	./stack-deletion/delete-stack-wait-termination.sh $(APPLICATION_NAME)
+	./stack-deletion/delete-stack-wait-termination.sh $(MASTER_STACK_NAME)
 
 
 AWS_ACCOUNT_ID := $(shell aws sts get-caller-identity --query "Account" --output text)
 S3_BUCKET_NAME=$(APPLICATION_NAME)-$(AWS_ACCOUNT_ID)-$(AWS_REGION)-bucket
+export S3_BUCKET_NAME
 s3-bucket::
 	aws cloudformation deploy    \
           --stack-name $(S3_BUCKET_NAME)   \
