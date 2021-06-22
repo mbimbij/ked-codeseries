@@ -77,7 +77,7 @@
   },
   {
     "ParameterKey": "ProductionLoadBalancerDeregistrationDelay",
-    "ParameterValue": "180"
+    "ParameterValue": "20"
   },
   {
     "ParameterKey": "ProductionHealthCheckIntervalSeconds",
@@ -85,7 +85,7 @@
   },
   {
     "ParameterKey": "ProductionHealthyThresholdCount",
-    "ParameterValue": "3"
+    "ParameterValue": "2"
   },
   {
     "ParameterKey": "ProductionUnhealthyThresholdCount",
