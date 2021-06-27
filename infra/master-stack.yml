@@ -245,6 +245,8 @@ Resources:
         GithubRepoBranch:
           Ref: GithubRepoBranch
         StagingAutoScalingGroupName: !GetAtt StagingEC2BasedInfra.Outputs.AutoScalingGroupName
+        ProductionAutoScalingGroupName: !GetAtt ProductionEC2BasedInfra.Outputs.AutoScalingGroupName
+        ProductionTargetGroupName: !GetAtt ProductionEC2BasedInfra.Outputs.TargetGroupName
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::Pipeline'

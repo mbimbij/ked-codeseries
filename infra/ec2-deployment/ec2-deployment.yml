@@ -181,3 +181,5 @@ Resources:
 Outputs:
   AutoScalingGroupName:
     Value: !Ref AutoScalingGroup
+  TargetGroupName:
+    Value: !GetAtt TargetGroup.TargetGroupName
