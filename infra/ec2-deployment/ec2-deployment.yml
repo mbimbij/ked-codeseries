@@ -177,3 +177,7 @@ Resources:
       Type: String
       Value: !GetAtt [ LoadBalancer, DNSName ]
       Description: Elasticache Port
+
+Outputs:
+  AutoScalingGroupName:
+    Value: !Ref AutoScalingGroup
