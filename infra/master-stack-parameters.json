@@ -114,5 +114,13 @@
   {
     "ParameterKey": "S3Bucket",
     "ParameterValue": "${S3_BUCKET_NAME}"
+  },
+  {
+    "ParameterKey": "GithubRepo",
+    "ParameterValue": "${GITHUB_REPO}"
+  },
+  {
+    "ParameterKey": "GithubRepoBranch",
+    "ParameterValue": "${GITHUB_REPO_BRANCH}"
   }
 ]

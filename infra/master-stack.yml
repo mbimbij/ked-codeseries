@@ -100,6 +100,12 @@ Parameters:
   S3Bucket:
     Type: String
     Description: S3 Bucket
+  GithubRepo:
+    Type: String
+    Description: Github source code repository
+  GithubRepoBranch:
+    Type: String
+    Description: Github source code branch
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -234,6 +240,10 @@ Resources:
           Ref: ApplicationName
         S3Bucket:
           Ref: S3Bucket
+        GithubRepo:
+          Ref: GithubRepo
+        GithubRepoBranch:
+          Ref: GithubRepoBranch
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::Pipeline'
