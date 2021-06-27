@@ -155,3 +155,8 @@ Resources:
               Configuration:
                 ProjectName:
                   Ref: BuildProject
+  CodeDeployApplication:
+    Type: AWS::CodeDeploy::Application
+    Properties:
+      ApplicationName: !Sub '${ApplicationName}'
+      ComputePlatform: Server
