@@ -15,6 +15,12 @@ Parameters:
   StagingAutoScalingGroupName:
     Type: String
     Description: Staging Auto Scaling Group Name
+  ProductionAutoScalingGroupName:
+    Type: String
+    Description: Production Auto Scaling Group Name
+  ProductionTargetGroupName:
+    Type: String
+    Description: Production Target Group Arn
 
 Resources:
   GithubConnection:
@@ -117,11 +123,11 @@ Resources:
         Type: LINUX_CONTAINER
         ComputeType: BUILD_GENERAL1_SMALL
         Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
-      Source:
-        Type: CODEPIPELINE
       Cache:
         Type: S3
         Location: !Sub '${S3Bucket}/maven-cache'
+      Source:
+        Type: CODEPIPELINE
   Pipeline:
     Description: Creating a deployment pipeline for !Ref ApplicationName project in AWS CodePipeline
     Type: 'AWS::CodePipeline::Pipeline'
@@ -178,6 +184,31 @@ Resources:
                   Ref: CodeDeployApplication
                 DeploymentGroupName:
                   Ref: StagingDeploymentGroup
+        - Name: Production
+          Actions:
+            - Name: Approval
+              RunOrder: 1
+              ActionTypeId:
+                Category: Approval
+                Owner: AWS
+                Version: 1
+                Provider: Manual
+              Configuration:
+                CustomData: "Perform all necessary manual tests before approving."
+            - Name: Deploy
+              RunOrder: 2
+              InputArtifacts:
+                - Name: BuildArtifact
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CodeDeploy
+              Configuration:
+                ApplicationName:
+                  Ref: CodeDeployApplication
+                DeploymentGroupName:
+                  Ref: ProductionDeploymentGroup
   CodeDeployApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
@@ -202,7 +233,22 @@ Resources:
     Properties:
       ApplicationName: !Ref CodeDeployApplication
       ServiceRoleArn: !GetAtt CodeDeployRole.Arn
-      DeploymentGroupName: !Sub 'staging'
+      DeploymentGroupName: 'staging'
       DeploymentConfigName: CodeDeployDefault.AllAtOnce
       AutoScalingGroups:
         - !Ref StagingAutoScalingGroupName
+  ProductionDeploymentGroup:
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties:
+      ApplicationName: !Ref CodeDeployApplication
+      ServiceRoleArn: !GetAtt CodeDeployRole.Arn
+      DeploymentGroupName: 'production'
+      DeploymentConfigName: CodeDeployDefault.OneAtATime
+      AutoScalingGroups:
+        - !Ref ProductionAutoScalingGroupName
+      DeploymentStyle:
+        DeploymentType: IN_PLACE
+        DeploymentOption: WITH_TRAFFIC_CONTROL
+      LoadBalancerInfo:
+        TargetGroupInfoList:
+          - Name: !Ref ProductionTargetGroupName
