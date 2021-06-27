@@ -12,6 +12,9 @@ Parameters:
     Default: 'main'
     Type: String
     Description: Github source code branch
+  StagingAutoScalingGroupName:
+    Type: String
+    Description: Staging Auto Scaling Group Name
 
 Resources:
   GithubConnection:
@@ -90,6 +93,10 @@ Resources:
                   - codebuild:BatchGetBuildBatches
                   - codebuild:StartBuildBatch
                 Resource: !GetAtt BuildProject.Arn
+              - Effect: Allow
+                Action:
+                  - codedeploy:*
+                Resource: !Sub 'arn:${AWS::Partition}:codedeploy:${AWS::Region}:${AWS::AccountId}*'
       AssumeRolePolicyDocument:
         Statement:
           - Action: "sts:AssumeRole"
@@ -134,7 +141,7 @@ Resources:
                 Version: 1
                 Provider: CodeStarSourceConnection
               OutputArtifacts:
-                - Name: SourceOutput
+                - Name: SourceArtifact
               Configuration:
                 ConnectionArn: !Ref GithubConnection
                 FullRepositoryId: !Ref GithubRepo
@@ -144,9 +151,9 @@ Resources:
           Actions:
             - Name: Build
               InputArtifacts:
-                - Name: SourceOutput
+                - Name: SourceArtifact
               OutputArtifacts:
-                - Name: BuildOutput
+                - Name: BuildArtifact
               ActionTypeId:
                 Category: Build
                 Owner: AWS
@@ -155,8 +162,47 @@ Resources:
               Configuration:
                 ProjectName:
                   Ref: BuildProject
+        - Name: Staging
+          Actions:
+            - Name: Deploy
+              RunOrder: 1
+              InputArtifacts:
+                - Name: BuildArtifact
+              ActionTypeId:
+                Category: Deploy
+                Owner: AWS
+                Version: 1
+                Provider: CodeDeploy
+              Configuration:
+                ApplicationName:
+                  Ref: CodeDeployApplication
+                DeploymentGroupName:
+                  Ref: StagingDeploymentGroup
   CodeDeployApplication:
     Type: AWS::CodeDeploy::Application
     Properties:
       ApplicationName: !Sub '${ApplicationName}'
       ComputePlatform: Server
+  CodeDeployRole:
+    Type: 'AWS::IAM::Role'
+    Description: IAM role for !Ref ApplicationName code deploy deployment group
+    Properties:
+      RoleName: !Sub '${ApplicationName}-deploy-role'
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: Allow
+            Principal:
+              Service:
+                - codedeploy.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole
+  StagingDeploymentGroup:
+    Type: AWS::CodeDeploy::DeploymentGroup
+    Properties:
+      ApplicationName: !Ref CodeDeployApplication
+      ServiceRoleArn: !GetAtt CodeDeployRole.Arn
+      DeploymentGroupName: !Sub 'staging'
+      DeploymentConfigName: CodeDeployDefault.AllAtOnce
+      AutoScalingGroups:
+        - !Ref StagingAutoScalingGroupName

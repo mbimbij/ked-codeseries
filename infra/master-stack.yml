@@ -244,6 +244,7 @@ Resources:
           Ref: GithubRepo
         GithubRepoBranch:
           Ref: GithubRepoBranch
+        StagingAutoScalingGroupName: !GetAtt StagingEC2BasedInfra.Outputs.AutoScalingGroupName
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::Pipeline'
