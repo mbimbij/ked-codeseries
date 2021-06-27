@@ -110,5 +110,9 @@
   {
     "ParameterKey": "SshKeyName",
     "ParameterValue": "${SSH_KEY_NAME}"
+  },
+  {
+    "ParameterKey": "S3Bucket",
+    "ParameterValue": "${S3_BUCKET_NAME}"
   }
 ]

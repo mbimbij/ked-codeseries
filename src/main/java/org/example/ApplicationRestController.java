@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @RestController
 public class ApplicationRestController {
-  public static final String RESPONSE_PREFIX = "Hello World 2 !";
+  public static final String RESPONSE_PREFIX = "Hello World !";
   public static final String uuid = UUID.randomUUID().toString();
 
   @GetMapping("/")

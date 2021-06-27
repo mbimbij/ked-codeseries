@@ -97,6 +97,9 @@ Parameters:
   SshKeyName:
     Type: String
     Description: SSH Key Pair Name
+  S3Bucket:
+    Type: String
+    Description: S3 Bucket
 Resources:
   StagingNetwork:
     Type: "AWS::CloudFormation::Stack"
@@ -229,6 +232,8 @@ Resources:
       Parameters:
         ApplicationName:
           Ref: ApplicationName
+        S3Bucket:
+          Ref: S3Bucket
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::Pipeline'
