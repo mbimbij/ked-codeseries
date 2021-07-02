@@ -1,0 +1,184 @@
+Parameters:
+  ApplicationName:
+    Type: String
+    Description: Application Name
+  Environment:
+    Type: String
+    Description: "Environment: staging, production, etc."
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: Vpc Id
+  PrivateSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Private Subnet Ids
+  PublicSubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Public Subnet Ids
+  LoadBalancerPort:
+    Type: Number
+    Description: LoadBalancer Port
+  ApplicationPort:
+    Type: Number
+    Description: Application Port
+  AmiId:
+    Type: AWS::EC2::Image::Id
+    Description: Ami Id
+  InstanceType:
+    Type: String
+    Description: Instance Type
+  UserDataBase64:
+    Type: String
+    Description: User Data Base64
+  SshKeyName:
+    Default: ""
+    Type: String
+    Description: SSH Key Pair Name
+  BastionHostSecurityGroupId:
+    Default: ""
+    Type: String
+    Description: Bastion Host Security Group
+  LoadBalancerDeregistrationDelay:
+    Type: Number
+    Description: Load Balancer Deregistration Delay
+  HealthCheckIntervalSeconds:
+    Type: Number
+    Description: Health Check Interval Seconds
+  HealthyThresholdCount:
+    Type: Number
+    Description: Healthy Threshold Count
+  UnhealthyThresholdCount:
+    Type: Number
+    Description: Unhealthy Threshold Count
+Conditions:
+  BastionHostSshAccess:
+    Fn::Not:
+      - !Equals [ !Ref SshKeyName, "" ]
+Resources:
+  Ec2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: ec2 security group
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8080
+          ToPort: 8080
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+  Ec2SecurityGroupBastionHostIngress:
+    Condition: BastionHostSshAccess
+    Type: AWS::EC2::SecurityGroupIngress
+    DependsOn: Ec2SecurityGroup
+    Properties:
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      GroupId: !Ref Ec2SecurityGroup
+      SourceSecurityGroupId: !Ref BastionHostSecurityGroupId
+  Ec2InstanceProfile:
+    Type: "AWS::IAM::InstanceProfile"
+    Properties:
+      Roles:
+        - Ref: Ec2InstanceRole
+  Ec2InstanceRole:
+    Type: 'AWS::IAM::Role'
+    Description: IAM role for !Ref ApplicationName EC2 instance profile
+    Properties:
+      RoleName: !Sub '${ApplicationName}-${Environment}-ec2-instance-role'
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: "sts:AssumeRole"
+            Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub '${ApplicationName}-${Environment}-tg'
+      HealthCheckEnabled: true
+      HealthCheckPort: !Ref ApplicationPort
+      HealthCheckIntervalSeconds: !Ref HealthCheckIntervalSeconds
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: !Ref HealthyThresholdCount
+      UnhealthyThresholdCount: !Ref UnhealthyThresholdCount
+      HealthCheckPath: "/actuator/health"
+      TargetType: instance
+      Protocol: HTTP
+      Port: !Ref ApplicationPort
+      VpcId: !Ref VpcId
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: !Ref LoadBalancerDeregistrationDelay
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateData:
+        ImageId: !Ref AmiId
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile:
+          Arn: !GetAtt [ Ec2InstanceProfile, Arn ]
+        SecurityGroupIds:
+          - !Ref Ec2SecurityGroup
+        UserData: !Ref UserDataBase64
+        KeyName: !If [BastionHostSshAccess, !Ref SshKeyName, !Ref AWS::NoValue]
+      LaunchTemplateName: !Sub '${ApplicationName}-${Environment}-launch-template'
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DeletionPolicy: Delete
+    Properties:
+      HealthCheckGracePeriod: 60
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: '1'
+      DesiredCapacity: '2'
+      MaxSize: '3'
+      TargetGroupARNs:
+        - !Ref TargetGroup
+      VPCZoneIdentifier: !Ref PrivateSubnetIds
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub '${ApplicationName}::${Environment}::LB-SG'
+      GroupDescription: Alb security group
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref LoadBalancerPort
+          ToPort: !Ref LoadBalancerPort
+          CidrIp: 0.0.0.0/0
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub '${ApplicationName}-${Environment}-lb'
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
+      Type: application
+      Subnets: !Ref PublicSubnetIds
+  LoadBalancerListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: "forward"
+          ForwardConfig:
+            TargetGroups:
+              - TargetGroupArn: !Ref TargetGroup
+                Weight: 1
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: !Ref LoadBalancerPort
+      Protocol: "HTTP"
+  LoadBalancerDNSNameSsmParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: !Sub '/${ApplicationName}/${Environment}/load-balancer/dns-name'
+      Type: String
+      Value: !GetAtt [ LoadBalancer, DNSName ]
+      Description: Elasticache Port
+
+Outputs:
+  TargetGroupName:
+    Value: !GetAtt TargetGroup.TargetGroupName
