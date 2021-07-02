@@ -219,6 +219,17 @@ Resources:
     Description: IAM role for !Ref ApplicationName code deploy deployment group
     Properties:
       RoleName: !Sub '${ApplicationName}-deploy-role'
+      Policies:
+        - PolicyName: !Sub '${ApplicationName}-launch-template-based-asg-deploy-policy'
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - iam:PassRole
+                  - ec2:CreateTags
+                  - ec2:RunInstances
+                Resource:
+                  - '*'
       AssumeRolePolicyDocument:
         Statement:
           - Action: "sts:AssumeRole"
