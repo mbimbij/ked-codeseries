@@ -222,3 +222,13 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub '${AWS::StackName}::ProductionEC2BasedInfra'
+  Pipeline:
+    Type: "AWS::CloudFormation::Stack"
+    Properties:
+      TemplateURL: 'pipeline/pipeline.yml'
+      Parameters:
+        ApplicationName:
+          Ref: ApplicationName
+      Tags:
+        - Key: Name
+          Value: !Sub '${AWS::StackName}::Pipeline'

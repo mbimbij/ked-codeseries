@@ -1,0 +1,11 @@
+Parameters:
+  ApplicationName:
+    Type: String
+    Description: Application Name
+
+Resources:
+  GithubConnection:
+    Type: AWS::CodeStarConnections::Connection
+    Properties:
+      ConnectionName: !Ref ApplicationName
+      ProviderType: GitHub
