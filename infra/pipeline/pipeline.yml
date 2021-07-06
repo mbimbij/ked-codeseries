@@ -112,12 +112,6 @@ Resources:
         Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
       Source:
         Type: CODEPIPELINE
-        BuildSpec: |
-          version: 0.2
-          phases:
-            build:
-              commands:
-                - echo coucou
   Pipeline:
     Description: Creating a deployment pipeline for !Ref ApplicationName project in AWS CodePipeline
     Type: 'AWS::CodePipeline::Pipeline'
