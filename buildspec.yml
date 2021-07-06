@@ -1,0 +1,19 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+  build:
+    commands:
+      - mvn clean package
+reports:
+  UnitTests:
+    files:
+      - 'target/surefire-reports/TEST*.xml'
+  CoverageReport:
+    files:
+      - 'target/site/jacoco/jacoco.xml'
+    file-format: 'JACOCOXML'
+artifacts:
+  files:
+    - '**/*'
